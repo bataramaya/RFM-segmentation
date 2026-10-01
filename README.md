@@ -157,6 +157,7 @@ customers.
 
 ## [What I would change next time]
 > *"Before writing any code, I would ask: what decision is this output
-> meant to serve? If the answer is '[YOUR DECISION HERE]', then 60 days
-> is immediately insufficient — and that is knowable in 2 minutes,
-> not 40."*
+> meant to serve? If the answer is 'how often do customers actually
+> come back', then 60 days is immediately insufficient — the median
+> repeat-purchase gap alone needs a longer window than the whole
+> dataset. That is knowable in 2 minutes, not 40."*
