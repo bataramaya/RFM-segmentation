@@ -1,4 +1,4 @@
-# RFM Segmentation — Lab (bukan karya portofolio)
+# RFM Segmentation — karya portofolio
 
 > **Status: dihentikan dengan sadar.** Proyek ini saya buat untuk
 > menguji kode, bukan untuk menjawab pertanyaan bisnis. Datanya
@@ -79,7 +79,7 @@ Sebelum menulis kode, saya akan bertanya: hasil analisis ini nanti dipakai untuk
 
 
 
-# RFM Segmentation — Lab (not a portfolio piece)
+# RFM Segmentation —  portfolio piece
 
 > **Status: stopped on purpose.** I built this to test code, not to
 > answer a business question. The dataset cannot support the analysis
