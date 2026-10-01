@@ -76,3 +76,87 @@ pelanggan berulang.
 ## Yang akan saya ubah jika mengulang
 Sebelum menulis kode, saya akan bertanya: hasil analisis ini nanti dipakai untuk memutuskan apa? Kalau jawabannya 
 'mencari siapa yang harus dikirimi voucher bulan depan', maka 60 hari langsung tidak cukup — dan itu ketahuan sebelum sejam kode ditulis, bukan sesudah.
+
+
+
+# RFM Segmentation — Lab (not a portfolio piece)
+
+> **Status: stopped on purpose.** I built this to test code, not to
+> answer a business question. The dataset cannot support the analysis
+> I attempted — details under "Limitations".
+
+## Question I set out to answer
+Group e-commerce customers into actionable segments: who to protect,
+who to win back, who to stop paying attention to.
+
+## Data
+- 1,000 transaction rows, 946 unique customers
+- Window: 2023-04-11 → 2023-06-10 (60 days)
+- Columns: customer_id, purchase_date, transaction_amount,
+  product, order_id, city
+
+## What I built
+`src/rfm.py` — three functions, tested and reusable:
+- `load()`       read CSV, force dates into datetime
+- `build_rfm()`  1,000 receipts → one row per customer
+- `add_scores()` split each metric into five equal-sized groups
+
+## Five things I learned
+
+1. **Dates must be converted, not trusted.** Without `pd.to_datetime`,
+   `"2023-4-9"` compares as *greater than* `"2023-4-11"` because
+   strings are compared character by character. Wrong result,
+   no error raised.
+
+2. **Recency must be measured from the last date in the data**, not
+   from today. Using today makes every customer "3 years inactive"
+   and destroys all separation between them.
+
+3. **`qcut` rejects duplicate values.** 946 customers had
+   frequency = 1, which broke quartile binning.
+   `rank(method='first')` is the workaround.
+
+4. **"Other" is not a finding — it's a dumping ground.** It became the
+   largest group (378 of 946) purely because it collected everything
+   that failed the earlier rules.
+
+5. **A label can look convincing while meaning nothing.** The most
+   expensive lesson here. See below.
+
+## Limitations — why I stopped this project
+
+Frequency is one of the three pillars of RFM. Here is the average
+frequency inside each segment I created:
+
+| Segment | Avg. frequency |
+|---|---|
+| New, one-time | 1.00 |
+| Average | 1.02 |
+| Lapsed, previously strong | 1.07 |
+| Champion | 1.15 |
+
+Total spread across four segments: **0.15.** The four groups I claimed
+were behaviourally distinct are the same customer, counted again.
+
+The code computed correctly — evidence: the segment whose rule is
+`frequency == 1` returned exactly 1.00. What was broken was not the
+code. The data simply held no such signal. **You cannot author a label
+into existence with another `if` statement.**
+
+Sanity check: segment counts sum to 946, matching unique customers —
+no rows were silently dropped.
+
+## Decision
+`src/rfm.py` is kept as a tested, reusable component. The analysis
+continues on a real transactional dataset with genuine repeat
+customers.
+
+## Run it
+    pip install pandas
+    python olah.py
+
+## [What I would change next time]
+> *"Before writing any code, I would ask: what decision is this output
+> meant to serve? If the answer is '[YOUR DECISION HERE]', then 60 days
+> is immediately insufficient — and that is knowable in 2 minutes,
+> not 40."*
