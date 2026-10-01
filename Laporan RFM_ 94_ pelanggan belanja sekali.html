@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laporan RFM: 94% pelanggan belanja sekali</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7f4;--fg:#1d2a2a;--mut:#5d6b6b;--line:#d9dedb;--a:#0f6b6b;--b:#c9d6d3;--hl:#b3402a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141b1b;--fg:#e8eeec;--mut:#9aa8a6;--line:#2c3837;--a:#4cb8b0;--b:#2f4442;--hl:#ee7d63}}
+:root[data-theme="dark"]{--bg:#141b1b;--fg:#e8eeec;--mut:#9aa8a6;--line:#2c3837;--a:#4cb8b0;--b:#2f4442;--hl:#ee7d63}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 Georgia,"Iowan Old Style",serif}
+main{max-width:760px;margin:0 auto;padding:40px 20px 64px}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.15;margin:0 0 12px;font-weight:700}
+h2{font-size:21px;margin:48px 0 6px}
+p{margin:0 0 12px;max-width:68ch}
+.sub{color:var(--mut)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;margin:28px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kpi div{padding:14px 12px 14px 0}.kpi b{display:block;font-size:26px}.kpi span{color:var(--mut);font-size:14px}
+svg{width:100%;height:auto;display:block;font-family:system-ui,sans-serif}
+.cap{font-size:14px;color:var(--mut)}
+.t{overflow-x:auto}table{border-collapse:collapse;width:100%;font:14px system-ui,sans-serif}
+th,td{text-align:right;padding:8px 10px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+</style></head><body><main>
+<h1>94% pelanggan hanya belanja sekali</h1>
+<p class="sub">Analisis RFM atas 1.000 transaksi (16 Apr – 10 Jun 2023). Kesimpulannya: segmentasi tidak bermakna pada data ini, dan itu hasil yang sah.</p>
+<div class="kpi">
+<div><b>1.000</b><span>transaksi</span></div><div><b>946</b><span>pelanggan unik</span></div>
+<div><b>895</b><span>belanja satu kali</span></div><div><b>513,7 rb</b><span>total nilai transaksi</span></div></div>
+
+<h2>Hampir tidak ada yang kembali</h2>
+<p>Dari 946 pelanggan, hanya 51 yang belanja lebih dari sekali, dan hanya 3 yang tiga kali. Frequency nyaris konstan, jadi tidak bisa membedakan pelanggan.</p>
+<div id="c1"></div>
+
+<h2>Segmen berbeda di R dan M, bukan di F</h2>
+<p>Pelanggan dibagi dengan skor kuartil Recency dan Monetary. Hasilnya, rata-rata frequency semua segmen berada di 1,01–1,13, hampir tidak ada beda perilaku walau nilai belanjanya berbeda tiga kali lipat.</p>
+<div id="c2"></div>
+<div class="t"><table id="tb"></table></div>
+<p class="cap">Segmen ini dihitung ulang di laporan ini dengan pembagian sederhana (Baru/Lama × Bernilai/Kecil), sehingga jumlah per segmen bisa berbeda dari 378/235/189/144 di sesi sebelumnya.</p>
+
+<h2>Penjualan mingguan</h2>
+<p>Puncak ada di akhir April hingga awal Mei. Minggu terakhir lebih rendah karena hanya mencakup 10 Juni.</p>
+<div id="c3"></div>
+
+<h2>Wilayah dan produk relatif merata</h2>
+<p>Tidak ada wilayah atau produk yang menonjol. Tokyo dan Produk C unggul tipis.</p>
+<div id="c4"></div>
+
+<h2>Yang bisa disimpulkan</h2>
+<p>Rentang 60 hari terlalu pendek untuk menjawab apakah pelanggan akan kembali. RFM butuh perilaku berulang; untuk itu data seperti Olist lebih cocok.</p>
+</main>
+<script>
+const NS="http://www.w3.org/2000/svg",css=n=>getComputedStyle(document.documentElement).getPropertyValue(n);
+const fmt=n=>n.toLocaleString("id-ID");
+function bars(id,rows,o){ // rows:[label,value,highlight]
+ const W=720,L=o.left||110,rh=34,H=rows.length*rh+10,mx=Math.max(...rows.map(r=>r[1]));
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label}">`;
+ rows.forEach((r,i)=>{const y=i*rh+4,w=(W-L-90)*r[1]/mx;
+  s+=`<text x="0" y="${y+20}" font-size="14" fill="var(--fg)">${r[0]}</text><rect x="${L}" y="${y+4}" width="${w}" height="22" rx="2" fill="${r[2]?'var(--hl)':'var(--a)'}"/><text x="${L+w+8}" y="${y+20}" font-size="14" fill="var(--fg)">${o.f?o.f(r[1]):fmt(r[1])}</text>`});
+ document.getElementById(id).innerHTML=s+"</svg>"}
+bars("c1",[["1 kali",895,1],["2 kali",48],["3 kali",3]],{label:"Jumlah pelanggan menurut frekuensi belanja",left:80});
+const seg=[["Baru & bernilai",241,1.13,15.5,829.7],["Baru & kecil",232,1.02,14.3,276.6],["Lama & bernilai",232,1.06,44.7,789.6],["Lama & kecil",241,1.01,45.4,275.3]];
+bars("c2",seg.map(s=>[s[0],s[2]]),{label:"Rata-rata frequency per segmen",left:130,f:v=>v.toFixed(2).replace(".",",")});
+document.getElementById("tb").innerHTML="<tr><th>Segmen</th><th>Pelanggan</th><th>Recency (hari)</th><th>Monetary (rata-rata)</th></tr>"+seg.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[3].toString().replace(".",",")}</td><td>${fmt(s[4])}</td></tr>`).join("");
+// weekly column chart
+(function(){const w=[["16 Apr",47973],["23 Apr",51293],["30 Apr",72936],["7 Mei",71586],["14 Mei",55924],["21 Mei",49318],["28 Mei",62595],["4 Jun",61839],["11 Jun*",40213]];
+ const W=720,H=260,b=30,mx=80000,bw=52,g=(W-9*bw)/10;let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Nilai transaksi per minggu">`;
+ w.forEach((r,i)=>{const x=g+i*(bw+g),h=(H-b-24)*r[1]/mx,y=H-b-h;
+  s+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="2" fill="${i==8?'var(--b)':'var(--a)'}"/><text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="12" fill="var(--fg)">${Math.round(r[1]/1000)}rb</text><text x="${x+bw/2}" y="${H-10}" text-anchor="middle" font-size="12" fill="var(--mut)">${r[0]}</text>`});
+ document.getElementById("c3").innerHTML=s+"</svg><p class='cap'>*Minggu terakhir tidak penuh. Minggu berakhir pada tanggal tertera.</p>"})();
+document.getElementById("c4").innerHTML="<div id='l'></div><div id='p' style='margin-top:20px'></div>";
+bars("l",[["Tokyo",139336,1],["New York",132103],["London",129798],["Paris",112441]],{label:"Nilai transaksi per wilayah",left:90});
+bars("p",[["Produk C",144491,1],["Produk D",128728],["Produk B",123038],["Produk A",117420]],{label:"Nilai transaksi per produk",left:90});
+</script></body></html>
